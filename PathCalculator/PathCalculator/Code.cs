@@ -10,12 +10,12 @@ namespace PathCalculator
         /// <summary>
         /// Types of posibles points
         /// </summary>
-        public enum Type
+        public enum Type : int
         {
             /// <summary>
             /// Distribution center
             /// </summary>
-            cd,
+            cd = 0,
             /// <summary>
             /// Point where it will be unloaded
             /// </summary>
@@ -49,7 +49,7 @@ namespace PathCalculator
             /// <summary>
             /// Where it can be traveled to from it
             /// </summary>
-            public Connection[] connections;
+            public List<Connection> connections;
             /// <summary>
             /// Type of point
             /// </summary>
@@ -79,91 +79,7 @@ namespace PathCalculator
         /// <summary>
         /// List of points (example)
         /// </summary>
-        List<Points> mainPoints = new List<Points> {
-            // Punkt 1 - A1
-            new Points() {
-                pointName = "A1",
-                connections=new Points.Connection[] {
-                    new Points.Connection()
-                    {
-                        connection = "A2",
-                        distance=15
-                    },
-                    new Points.Connection()
-                    {
-                        connection = "A3",
-                        distance = 5
-                    },
-                    new Points.Connection()
-                    {
-                        connection="CD",
-                        distance=6
-                    }
-                },
-                pointType=Type.point
-            },
-            // Punkt 2 - A2
-            new Points()
-            {
-                pointName="A2",
-                connections = new Points.Connection[]
-                {
-                    new Points.Connection()
-                    {
-                        connection = "A1",
-                        distance = 15
-                    },
-                    new Points.Connection()
-                    {
-                        connection = "A3",
-                        distance=10
-                    },
-                    new Points.Connection()
-                    {
-                        connection = "CD",
-                        distance=5
-                    }
-                },
-                pointType=Type.point
-            },
-            new Points()
-            {
-                pointName="A3",
-                connections = new Points.Connection[]
-                {
-                    new Points.Connection()
-                    {
-                        connection = "A1",
-                        distance = 5
-                    },
-                    new Points.Connection()
-                    {
-                        connection = "A2",
-                        distance=10
-                    }
-                },
-                pointType=Type.point
-            },
-            // Punkt 3 - Base
-            new Points()
-            {
-                pointName="CD",
-                connections = new Points.Connection[]
-                {
-                    new Points.Connection()
-                    {
-                        connection = "A1",
-                        distance = 6
-                    },
-                    new Points.Connection()
-                    {
-                        connection = "A2",
-                        distance=5
-                    }
-                },
-                pointType=Type.cd
-            }
-        };
+        List<Points> mainPoints = new List<Points>();
 
         float costs = 0;
 
@@ -173,8 +89,8 @@ namespace PathCalculator
         public void Run()
         {
             Thread.CurrentThread.Name = "Main";
-
-            print("Please write cost per one unit drived, 0 if none:", ConsoleColor.Cyan);
+            MenuController();
+            print("Please write cost per one unit(it means for example km) drived, 0 if none:", ConsoleColor.Cyan);
             costs = float.Parse(read());
             Console.CursorVisible = false;
 
@@ -239,9 +155,9 @@ namespace PathCalculator
                 }
 
                 print($"{roads}");
-                Thread.Sleep(500);
+                Thread.Sleep(100);
             }
-            Thread.Sleep(5000);
+            Thread.Sleep(2500);
             clear();
             print($"The best map option have distance {theBestMap.roadDistance} units, and costs {theBestMap.cost}");
 
@@ -260,7 +176,7 @@ namespace PathCalculator
             }
             print(xxx, ConsoleColor.Green);
 
-            key:
+        key:
             print("\nClick \"Enter\" to save routes or \"Space\" to end program");
             var key = Console.ReadKey();
             if (key.Key == ConsoleKey.Enter)
@@ -279,6 +195,261 @@ namespace PathCalculator
                 goto key;
             }
         }
+
+        #region Constructor
+
+
+        void MenuController()
+        {
+            FancyConsoleMenu menu = new FancyConsoleMenu("", new string[] { "Activate Example", "Delete all points", "Add Point", "Check Points", "Search Routes" });
+
+            int x;
+
+            do
+            {
+                x = menu.Run();
+                switch (x)
+                {
+                    case 0:
+                        mainPoints.Clear();
+                        mainPoints = new List<Points> {
+                        // Punkt 1 - A1
+                        new Points()
+                        {
+                            pointName = "A1",
+                            connections = new List<Points.Connection> {
+                                new Points.Connection()
+                                {
+                                    connection = "A2",
+                                    distance=15
+                                },
+                                new Points.Connection()
+                                {
+                                    connection = "A3",
+                                    distance = 5
+                                },
+                                new Points.Connection()
+                                {
+                                    connection="CD",
+                                    distance=6
+                                }
+                            },
+                            pointType = Type.point
+                        },
+                        // Punkt 2 - A2
+                        new Points()
+                        {
+                            pointName = "A2",
+                            connections = new List<Points.Connection>
+                            {
+                                new Points.Connection()
+                                {
+                                    connection = "A1",
+                                    distance = 15
+                                },
+                                new Points.Connection()
+                                {
+                                    connection = "A3",
+                                    distance=10
+                                },
+                                new Points.Connection()
+                                {
+                                    connection = "CD",
+                                    distance=5
+                                }
+                            },
+                            pointType = Type.point
+                        },
+                        new Points()
+                        {
+                            pointName = "A3",
+                            connections = new List<Points.Connection>
+                            {
+                                new Points.Connection()
+                                {
+                                    connection = "A1",
+                                    distance = 5
+                                },
+                                new Points.Connection()
+                                {
+                                    connection = "A2",
+                                    distance=10
+                                }
+                            },
+                            pointType = Type.point
+                        },
+                        // Punkt 3 - Base
+                        new Points()
+                        {
+                            pointName = "CD",
+                            connections = new List<Points.Connection>
+                            {
+                                new Points.Connection()
+                                {
+                                    connection = "A1",
+                                    distance = 6
+                                },
+                                new Points.Connection()
+                                {
+                                    connection = "A2",
+                                    distance=5
+                                }
+                            },
+                            pointType = Type.cd
+                        }
+                    };
+                        x = 4;
+                        break;
+                    case 1:
+                        mainPoints.Clear();
+                        break;
+                    case 2:
+                        AddPoint();
+                        break;
+                    case 3:
+                        CheckExistingPoints();
+                        break;
+                }
+            } while (x != 4);
+        }
+
+        void AddPoint()
+        {
+            Points point = new Points();
+
+            // Set name of point
+            clear();
+            print("Set name of the point:", ConsoleColor.Cyan);
+            string x = read();
+            if (!string.IsNullOrEmpty(x))
+            {
+                point.pointName = x;
+            }
+
+
+            // Set type of point
+            clear();
+            FancyConsoleMenu menu = new FancyConsoleMenu("Select type of the point:", new string[]
+            {
+                "Distribution Center",
+                "Drop Off Point",
+                "Resuply"
+            });
+            int y = menu.Run();
+            point.pointType = (Type)y;
+
+            // Set connections
+            bool add = true;
+            point.connections = new List<Points.Connection>();
+            do
+            {
+                clear();
+                print("Add connection name (Leave empty if all connections has been entered):", ConsoleColor.Cyan);
+                x = read();
+                if (!string.IsNullOrEmpty(x))
+                {
+                    Points.Connection connection = new Points.Connection
+                    {
+                        connection = x
+                    };
+                    print($"Set distance between {point.pointName} and {x}:", ConsoleColor.Cyan);
+                    float z = float.Parse(read());
+                    connection.distance = z;
+
+                    point.connections.Add(connection);
+                }
+                else
+                {
+                    add = false;
+                }
+            } while (add);
+
+            clear();
+            print("Ready point data\n\n" + toJson(point), ConsoleColor.Green);
+            mainPoints.Add(point);
+            Thread.Sleep(2000);
+        }
+
+        void CheckExistingPoints()
+        {
+            string[] points = new string[mainPoints.Count];
+            for (int i = 0; i < points.Length; i++)
+            {
+                points[i] = mainPoints[i].pointName;
+            }
+            FancyConsoleMenu pointSelection = new FancyConsoleMenu("Select point to modify:", points);
+            int x = pointSelection.Run();
+            mainPoints[x] = Modify(mainPoints[x]);
+            clear();
+            print(toJson(mainPoints[x]));
+            Thread.Sleep(250);
+        }
+        Points Modify(Points point)
+        {
+        key:
+            print(toJson(point));
+            print("Modify?");
+            print("\"Enter\"-Yes \"Space\"-No");
+            var key = Console.ReadKey();
+            if (key.Key == ConsoleKey.Enter)
+            {
+                FancyConsoleMenu menu = new FancyConsoleMenu("What do you want to modify?", new string[]
+                {
+                    "Name",
+                    "Connections",
+                    "Type",
+                    "Exit"
+                });
+                int x = menu.Run();
+                switch (x)
+                {
+                    case 0:
+                        print("Write new name: ", ConsoleColor.Cyan);
+                        point.pointName = read();
+                        break;
+                    case 1:
+                        clear();
+                        print(toJson(point.connections));
+                        print("Write name of point to modify:");
+                        var y = read();
+                        foreach (var item in point.connections)
+                        {
+                            if (item.connection == y)
+                            {
+                                print($"Actual name is {item.connection}, distance {item.distance}");
+                                print("New name:", ConsoleColor.Cyan);
+                                item.connection = read();
+                                print("New distance:", ConsoleColor.Cyan);
+                                item.distance = float.Parse(read());
+                                break;
+                            }
+                        }
+                        break;
+                    case 2:
+                        FancyConsoleMenu menuX = new FancyConsoleMenu("Select type of the point:", new string[]
+                        {
+                            "Distribution Center",
+                            "Drop Off Point",
+                            "Resuply"
+                        });
+                        int z = menuX.Run();
+                        point.pointType = (Type)z;
+                        break;
+                }
+                return point;
+            }
+            else if (key.Key == ConsoleKey.Spacebar)
+            {
+                return point;
+            }
+            else
+            {
+                clear();
+                goto key;
+            }
+        }
+
+        #endregion
 
         /// <summary>
         /// Gets maximum combinations for routes
@@ -362,21 +533,19 @@ namespace PathCalculator
                 if (!IsAllMached(points, pointsMade.ToArray()))
                 {
                     print("[!] Not every point has been mapped! Reseting map...", ConsoleColor.Magenta);
-                    Console.Beep();
                     errorAmount++;
                     maps.RemoveAt(mapIndex);
-                    if(errorAmount<10)
+                    if (errorAmount < 10)
                         goto errorRecorveryPoint;
 
                     print("Can't find any route, maybe something went wrong?", ConsoleColor.Red);
-                    Console.Beep(5000,500);
+                    Console.Beep(5000, 500);
                     break;
                 }
 
-                if (pointsMade[pointsMade.Count-1]!=cd)
+                if (pointsMade[pointsMade.Count - 1] != cd)
                 {
                     print($"[!] Last point isn't {cd.pointName}! Reseting map...", ConsoleColor.Magenta);
-                    Console.Beep();
                     errorAmount++;
                     maps.RemoveAt(mapIndex);
                     if (errorAmount < 10)
@@ -392,7 +561,7 @@ namespace PathCalculator
                 maps[mapIndex].cost = distanceMade * costs;
             }
             print($"Task{i} ended succesfull", ConsoleColor.Green);
-            Console.CursorVisible= true;
+            Console.CursorVisible = true;
             return maps;
         }
 

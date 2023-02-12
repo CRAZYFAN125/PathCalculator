@@ -264,5 +264,13 @@ namespace PathCalculator
         /// <param name="x">Number for factorial (greater than 0)</param>
         /// <returns>Factorial of number (0 if there was an error)</returns>
         public int Silnia(int x) => Factorial(x);
+
+        /// <summary>
+        /// Gives string with JSON code of element
+        /// </summary>
+        /// <param name="x">Data to JSON</param>
+        /// <returns>String with JSON code</returns>
+        public string toJson(object x) =>JsonConvert.SerializeObject(x, new JsonSerializerSettings() { Formatting = Formatting.Indented });
+
     }
 }
