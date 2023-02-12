@@ -11,6 +11,7 @@ namespace PathCalculator
     {
         static void Main(string[] args)
         {
+            Console.Title = "Path Calculator";
             Code code = new Code();
             code.Run();
 
@@ -27,8 +28,8 @@ namespace PathCalculator
             {
                 Console.WriteLine(item);
             }
-            */
             Console.ReadKey();
+            */
         }
     }
 }

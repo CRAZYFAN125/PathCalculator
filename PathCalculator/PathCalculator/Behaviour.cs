@@ -51,6 +51,15 @@ namespace PathCalculator
         }
 
         /// <summary>
+        /// Reads information given from console
+        /// </summary>
+        /// <returns>String with data</returns>
+        public string read()
+        {
+            return ReadLine();
+        }
+
+        /// <summary>
         /// Cleans fully console window
         /// </summary>
         public static void clear()
@@ -65,7 +74,7 @@ namespace PathCalculator
 
         #region Quick
         /// <summary>
-        /// Makes a save in save folder
+        /// Makes a save in save folder using JSON
         /// </summary>
         /// <param name="data">Thing to save</param>
         /// <param name="name">Saved file name (without extension)</param>
@@ -74,7 +83,7 @@ namespace PathCalculator
         {
             if (!string.IsNullOrEmpty(name))
             {
-                string json = JsonConvert.SerializeObject(data);
+                string json = JsonConvert.SerializeObject(data, new JsonSerializerSettings() { Formatting = Formatting.Indented });
                 File.WriteAllText(Path.Combine(ApplicationDataPath(), name + ".json"), json);
                 return true;
             }
@@ -126,23 +135,40 @@ namespace PathCalculator
         /// Makes a file with save
         /// </summary>
         /// <param name="data">Data to save</param>
-        /// <param name="name">Name of save file (with extension, for examle .json)</param>
+        /// <param name="name">Name of save file (with extension, for examle .json|.txt will be as normal txt)</param>
         /// <param name="path">Name of folder in which file has to be saved</param>
         /// <returns>True if saved succesfull</returns>
-        public bool Save(object data, string name, string path)
+        public bool Save(object data, string name, string path = "")
         {
-            path = Path.Combine(ApplicationDataPath(), path);
-
-            if (!Directory.Exists(path))
+            if (path != "")
             {
-                Directory.CreateDirectory(path);
+                path = Path.Combine(ApplicationDataPath(), path);
+
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
             }
+            else
+            {
+                path = ApplicationDataPath();
+            }
+
 
             if (!string.IsNullOrEmpty(name))
             {
-                string json = JsonConvert.SerializeObject(data);
-                File.WriteAllText(Path.Combine(path, name), json);
-                return true;
+                if (name.Split('.')[1] == "txt")
+                {
+                    File.WriteAllText(Path.Combine(path, name), data as string);
+                    return true;
+                }
+                else
+                {
+                    string json = JsonConvert.SerializeObject(data, new JsonSerializerSettings() { Formatting = Formatting.Indented });
+                    File.WriteAllText(Path.Combine(path, name), json);
+                    return true;
+                }
+
             }
             return false;
         }
@@ -215,13 +241,13 @@ namespace PathCalculator
         /// <returns>Factorial of number (0 if there was an error)</returns>
         public int Factorial(int x)
         {
-            if ( x <=0)
+            if (x <= 0)
             {
                 return 0;
             }
 
             int silnia = 1;
-            if (x==1)
+            if (x == 1)
             {
                 return 1;
             }
